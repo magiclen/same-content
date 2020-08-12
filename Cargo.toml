@@ -1,0 +1,16 @@
+[package]
+name = "same-content"
+version = "0.1.0"
+authors = ["Magic Len <len@magiclen.org>"]
+edition = "2018"
+repository = "https://github.com/magiclen/same-content"
+homepage = "https://magiclen.org/same-content"
+keywords = ["file", "reader", "same", "data", "stream"]
+categories = ["development-tools::debugging"]
+description = "Determine whether data from different sources are the same."
+readme = "README.md"
+license = "MIT"
+include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE"]
+
+[dependencies]
+generic-array = "0.14"
