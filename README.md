@@ -1,7 +1,7 @@
 Same Content
 ====================
 
-[![Build Status](https://travis-ci.org/magiclen/same-content.svg?branch=master)](https://travis-ci.org/magiclen/same-content)
+[![CI](https://github.com/magiclen/same-content/actions/workflows/ci.yml/badge.svg)](https://github.com/magiclen/same-content/actions/workflows/ci.yml)
 
 Determine whether data from different sources are the same.
 
