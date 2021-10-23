@@ -1,6 +1,6 @@
 [package]
 name = "same-content"
-version = "0.1.4"
+version = "0.1.5"
 authors = ["Magic Len <len@magiclen.org>"]
 edition = "2018"
 repository = "https://github.com/magiclen/same-content"
@@ -14,7 +14,10 @@ include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE"]
 
 [dependencies]
 generic-array = "0.14"
-tokio = { version = "1.12", features = ["test-util", "fs", "io-util", "macros"], optional = true }
+tokio = { version = "1.12", features = ["fs", "io-util"], optional = true }
+
+[dev-dependencies]
+tokio = { version = "1.12", features = ["test-util", "macros"] }
 
 [package.metadata.docs.rs]
 features = true
