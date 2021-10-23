@@ -34,6 +34,18 @@ use same_content::generic_array::typenum::U4096;
 assert!(!same_content_from_files2::<U4096>(&mut File::open("tests/data/P1140310.jpg").unwrap(), &mut File::open("tests/data/P1140558.jpg").unwrap()).unwrap());
 ```
 
+## Asynchronous APIs
+
+You may want to use async APIs with your async runtime. This crate supports `tokio`, currently.
+
+```toml
+[dependencies.same-content]
+version = "*"
+features = ["tokio"]
+```
+
+After enabling the async feature, the async functions are available.
+
 ## Crates.io
 
 https://crates.io/crates/same-content
