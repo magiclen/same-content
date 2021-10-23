@@ -31,15 +31,36 @@ use same_content::generic_array::typenum::U4096;
 
 assert!(!same_content_from_files2::<U4096>(&mut File::open("tests/data/P1140310.jpg").unwrap(), &mut File::open("tests/data/P1140558.jpg").unwrap()).unwrap());
 ```
+
+## Asynchronous APIs
+
+You may want to use async APIs with your async runtime. This crate supports `tokio`, currently.
+
+```toml
+[dependencies.same-content]
+version = "*"
+features = ["tokio"]
+```
+
+After enabling the async feature, the async functions are available.
 */
 
 pub extern crate generic_array;
+
+#[cfg(feature = "tokio")]
+extern crate tokio;
 
 use std::fs::File;
 use std::io::{self, ErrorKind, Read, Seek, SeekFrom};
 
 use generic_array::typenum::{IsGreaterOrEqual, True, U1, U256};
 use generic_array::{ArrayLength, GenericArray};
+
+#[cfg(feature = "tokio")]
+use tokio::io::{AsyncRead, AsyncReadExt, AsyncSeekExt};
+
+#[cfg(feature = "tokio")]
+use tokio::fs::File as AsyncFile;
 
 #[inline]
 pub fn same_content_from_files(a: &mut File, b: &mut File) -> Result<bool, io::Error> {
@@ -102,6 +123,99 @@ fn read_try_exact(a: &mut dyn Read, mut buffer: &mut [u8]) -> Result<usize, io::
 
     while !buffer.is_empty() {
         match a.read(buffer) {
+            Ok(0) => break,
+            Ok(n) => {
+                buffer = &mut buffer[n..];
+
+                sum += n;
+            }
+            Err(ref e) if e.kind() == ErrorKind::Interrupted => {}
+            Err(e) => return Err(e),
+        }
+    }
+
+    Ok(sum)
+}
+
+#[cfg(feature = "tokio")]
+#[inline]
+pub async fn same_content_from_files_async(
+    a: &mut AsyncFile,
+    b: &mut AsyncFile,
+) -> Result<bool, io::Error> {
+    same_content_from_files_async2::<U256>(a, b).await
+}
+
+#[cfg(feature = "tokio")]
+#[inline]
+pub async fn same_content_from_files_async2<
+    N: ArrayLength<u8> + IsGreaterOrEqual<U1, Output = True>,
+>(
+    a: &mut AsyncFile,
+    b: &mut AsyncFile,
+) -> Result<bool, io::Error> {
+    let metadata_a = a.metadata().await?;
+    let metadata_b = b.metadata().await?;
+
+    if metadata_a.len() != metadata_b.len() {
+        return Ok(false);
+    }
+
+    a.seek(SeekFrom::Start(0)).await?;
+    b.seek(SeekFrom::Start(0)).await?;
+
+    same_content_from_readers_async2::<N>(a, b).await
+}
+
+#[cfg(feature = "tokio")]
+#[inline]
+pub async fn same_content_from_readers_async(
+    a: &mut (dyn AsyncRead + Unpin),
+    b: &mut (dyn AsyncRead + Unpin),
+) -> Result<bool, io::Error> {
+    same_content_from_readers_async2::<U256>(a, b).await
+}
+
+#[cfg(feature = "tokio")]
+pub async fn same_content_from_readers_async2<
+    N: ArrayLength<u8> + IsGreaterOrEqual<U1, Output = True>,
+>(
+    a: &mut (dyn AsyncRead + Unpin),
+    b: &mut (dyn AsyncRead + Unpin),
+) -> Result<bool, io::Error> {
+    let mut buffer1: GenericArray<u8, N> = GenericArray::default();
+    let mut buffer2: GenericArray<u8, N> = GenericArray::default();
+
+    loop {
+        let ca = a.read(&mut buffer1).await?;
+
+        if ca == 0 {
+            let cb = read_try_exact_async(b, &mut buffer2[..1]).await?;
+
+            return Ok(cb == 0);
+        } else {
+            let cb = read_try_exact_async(b, &mut buffer2[..ca]).await?;
+
+            if ca != cb {
+                return Ok(false);
+            }
+
+            if buffer1[..ca] != buffer2[..ca] {
+                return Ok(false);
+            }
+        }
+    }
+}
+
+#[cfg(feature = "tokio")]
+async fn read_try_exact_async(
+    a: &mut (dyn AsyncRead + Unpin),
+    mut buffer: &mut [u8],
+) -> Result<usize, io::Error> {
+    let mut sum = 0;
+
+    while !buffer.is_empty() {
+        match a.read(buffer).await {
             Ok(0) => break,
             Ok(n) => {
                 buffer = &mut buffer[n..];
