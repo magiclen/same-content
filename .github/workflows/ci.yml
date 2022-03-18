@@ -31,7 +31,7 @@ jobs:
       - run: cargo clippy --all-targets --all-features -- -D warnings
 
   tests:
-    strategy:grep -r -n 'extern crate' --exclude-dir=target
+    strategy:
       fail-fast: false
       matrix:
         os:
