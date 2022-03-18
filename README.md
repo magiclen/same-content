@@ -8,8 +8,6 @@ Determine whether data from different sources are the same.
 ## Example
 
 ```rust
-extern crate same_content;
-
 use std::fs::File;
 
 use same_content::*;
@@ -24,8 +22,6 @@ The default buffer size for the `same_content_from_files` function and the `same
 For example, to change the buffer size to 4096 bytes,
 
 ```rust
-#[macro_use] extern crate same_content;
-
 use std::fs::File;
 
 use same_content::*;

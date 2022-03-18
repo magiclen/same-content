@@ -28,10 +28,10 @@ jobs:
           toolchain: nightly
           override: true
           components: clippy
-      - run: cargo clippy -- -D warnings
+      - run: cargo clippy --all-targets --all-features -- -D warnings
 
   tests:
-    strategy:
+    strategy:grep -r -n 'extern crate' --exclude-dir=target
       fail-fast: false
       matrix:
         os:

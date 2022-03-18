@@ -1,8 +1,8 @@
 [package]
 name = "same-content"
-version = "0.1.7"
+version = "0.1.8"
 authors = ["Magic Len <len@magiclen.org>"]
-edition = "2018"
+edition = "2021"
 repository = "https://github.com/magiclen/same-content"
 homepage = "https://magiclen.org/same-content"
 keywords = ["file", "reader", "same", "data", "stream"]

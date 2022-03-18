@@ -1,8 +1,3 @@
-#[cfg(feature = "tokio")]
-extern crate tokio;
-
-extern crate same_content;
-
 use std::fs::File;
 use std::path::Path;
 
