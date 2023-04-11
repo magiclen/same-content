@@ -1,10 +1,8 @@
-use std::fs::File;
-use std::path::Path;
-
-#[cfg(feature = "tokio")]
-use tokio::fs::File as AsyncFile;
+use std::{fs::File, path::Path};
 
 use same_content::*;
+#[cfg(feature = "tokio")]
+use tokio::fs::File as AsyncFile;
 
 #[test]
 fn same_file() {

@@ -43,17 +43,19 @@ After enabling the async feature, the async functions are available.
 
 pub extern crate generic_array;
 
-use std::fs::File;
-use std::io::{self, ErrorKind, Read, Seek, SeekFrom};
+use std::{
+    fs::File,
+    io::{self, ErrorKind, Read, Seek, SeekFrom},
+};
 
-use generic_array::typenum::{IsGreaterOrEqual, True, U1, U256};
-use generic_array::{ArrayLength, GenericArray};
-
-#[cfg(feature = "tokio")]
-use tokio::io::{AsyncRead, AsyncReadExt, AsyncSeekExt};
-
+use generic_array::{
+    typenum::{IsGreaterOrEqual, True, U1, U256},
+    ArrayLength, GenericArray,
+};
 #[cfg(feature = "tokio")]
 use tokio::fs::File as AsyncFile;
+#[cfg(feature = "tokio")]
+use tokio::io::{AsyncRead, AsyncReadExt, AsyncSeekExt};
 
 #[inline]
 pub fn same_content_from_files(a: &mut File, b: &mut File) -> Result<bool, io::Error> {
@@ -121,8 +123,8 @@ fn read_try_exact(a: &mut dyn Read, mut buffer: &mut [u8]) -> Result<usize, io::
                 buffer = &mut buffer[n..];
 
                 sum += n;
-            }
-            Err(ref e) if e.kind() == ErrorKind::Interrupted => {}
+            },
+            Err(ref e) if e.kind() == ErrorKind::Interrupted => {},
             Err(e) => return Err(e),
         }
     }
@@ -214,8 +216,8 @@ async fn read_try_exact_async(
                 buffer = &mut buffer[n..];
 
                 sum += n;
-            }
-            Err(ref e) if e.kind() == ErrorKind::Interrupted => {}
+            },
+            Err(ref e) if e.kind() == ErrorKind::Interrupted => {},
             Err(e) => return Err(e),
         }
     }
