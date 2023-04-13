@@ -9,7 +9,6 @@ homepage = "https://magiclen.org/same-content"
 keywords = ["file", "reader", "same", "data", "stream"]
 categories = ["development-tools::debugging"]
 description = "Determine whether data from different sources are the same."
-readme = "README.md"
 license = "MIT"
 include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE"]
 
