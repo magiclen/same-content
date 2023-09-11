@@ -18,7 +18,6 @@ jobs:
           - macos-latest
           - windows-latest
         toolchain:
-          - 1.56
           - stable
           - nightly
         features:
@@ -43,7 +42,7 @@ jobs:
           - macos-latest
           - windows-latest
         toolchain:
-          - "1.60"
+          - 1.63
         features:
           -
           - --features tokio
